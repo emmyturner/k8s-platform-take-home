@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: counter-api
+  labels:
+    app.kubernetes.io/name: counter-api
+    app.kubernetes.io/part-of: counter
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: counter-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: counter-api
+        app.kubernetes.io/part-of: counter
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: api
+          image: counter-api:dev
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: "8080"
+          envFrom:
+            - configMapRef:
+                name: counter-api-config
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-auth
+                  key: password
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi

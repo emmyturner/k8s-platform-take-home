@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: counter-api-config
+  labels:
+    app.kubernetes.io/name: counter-api
+    app.kubernetes.io/part-of: counter
+data:
+  REDIS_HOST: redis-master
+  REDIS_PORT: "6379"
+  REDIS_TLS: "false"

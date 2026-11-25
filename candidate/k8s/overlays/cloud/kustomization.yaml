@@ -1,0 +1,7 @@
+# Part 2: make this overlay describe how counter-api runs in a real cloud environment.
+# It only has to render (`kubectl kustomize k8s/overlays/cloud`). You do not need to apply it anywhere.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
